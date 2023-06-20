@@ -9,3 +9,9 @@
         - [Discrete Key-Value Bottleneck](https://www.notion.so/a6de73986797420f9f342eec16403279?pvs=21)
     - And also getting a working version of Muesli set up (and ultimately distributed):
         - [Muesli](https://www.notion.so/2934eda190bb4aaca178447019c78e49?pvs=21)
+
+## Current Progress
+
+Jonathan Lim wrote up a summary doc of [his finding on BabyAI](https://www.notion.so/Minigrid-BabyAI-4970e49e4c5e4f2588da9a938e517ca2?pvs=21)
+
+Jonathan Lim is finishing up a set up for procedural generation in BabyAI/Minigrid that will allow us to define level layouts via spreadsheets and stitch them together using randomized procedural generation techniques.
