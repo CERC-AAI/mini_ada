@@ -101,6 +101,9 @@ class CustomV1Env(MiniGridEnv):
     """
 
     def __init__(self, max_steps: int | None = None, **kwargs):
+        print(kwargs)
+        if "size" in kwargs:
+            kwargs.pop("size")
         map_arr = pd.read_csv(LAYOUT_PATH, header=None).to_numpy()
         size = len(map_arr)
         self.map_info = get_obj_coords(map_arr, OBJ_DICT)
