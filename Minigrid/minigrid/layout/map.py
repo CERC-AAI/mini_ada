@@ -1,15 +1,14 @@
 import numpy as np
 import pandas as pd
 import random
+import importlib
+import re
 
-from minigrid.layout.tiles import (
-    Wall,
-    Space,
-    Exit,
-    Undefined,
-)
+from minigrid.layout.tiles import *
 
-from minigrid.layout.constants import STATE_END_MERGES
+from minigrid.layout.constants import GENERATION_STATE
+
+
 
 class Map:
     
@@ -25,13 +24,10 @@ class Map:
             row = []
             for col_idx in range(len(self.map[0])):
                 tile_str = self.map[row_idx][col_idx]
-                tile_class, payload = self.get_class_from_tile_str(tile_str)
+                tile_class, params = get_class_from_tile_str(tile_str)
                 obj = None
                 if tile_class is not None:
-                    if payload is None:
-                        obj = tile_class(position=(row_idx, col_idx))
-                    else: 
-                        obj = tile_class(position=(row_idx, col_idx), payload=payload)
+                    obj = tile_class(position=(row_idx, col_idx), params=params)
 
                 row.append(obj)
             obj_map.append(row)
@@ -52,30 +48,6 @@ class Map:
         self.exit_coords_list = exits
         
         return exits
-    
-    def get_class_from_tile_str(self, tile_str):
-        if tile_str is None:
-            return None, None
-        
-        payload = None
-        l_bracket, r_bracket = tile_str.find("("), tile_str.find(")")
-        
-        if l_bracket == -1 or r_bracket == -1:
-            tile_type = tile_str
-        else:
-            tile_type = tile_str[:l_bracket]
-            payload = tile_str[l_bracket+1:r_bracket]
-        
-        OBJ_MAPPING = {
-            'Exit': Exit,
-            'Space': Space,
-            'Wall': Wall,
-            'Undf': Undefined,
-        }
-        
-        obj_class = OBJ_MAPPING.get(tile_type, None)
-        
-        return obj_class, payload
             
     
     def sync_map_using_obj_map(self):
@@ -172,7 +144,7 @@ class MasterMap(Map):
                 if (row_idx < 0 or row_idx >= mastermap_height 
                                 or col_idx < 0 
                                 or col_idx >= mastermap_width 
-                                or (mastermap_tile is not None and not mastermap_tile.can_overlap())
+                                or (mastermap_tile is not None and not mastermap_tile.can_overlap_tile(submap_tile))
                    ):
                     _has_space = False
                     break
@@ -221,12 +193,12 @@ class MasterMap(Map):
 
                         # Update the mastermap_tile
                         if mastermap_tile is not None:
-                            self.obj_map[mastermap_tile_r][mastermap_tile_c] = mastermap_tile.update(state="merge")                        
+                            self.obj_map[mastermap_tile_r][mastermap_tile_c] = mastermap_tile.update(GENERATION_STATE.MERGE)                        
                             
                         # Non-Overlapping merge: also need to update the submap tile
                         if mastermap_tile_r != submap_merge_tile_r or mastermap_tile_c != submap_merge_tile_c:
                             if submap_merge_tile is not None:
-                                self.obj_map[submap_merge_tile_r][submap_merge_tile_c] = submap_merge_tile.update(state="merge")
+                                self.obj_map[submap_merge_tile_r][submap_merge_tile_c] = submap_merge_tile.update(GENERATION_STATE.MERGE)
 
 
                         print(f"Master coords: {mastermap_coords}, submap_coords: {submap_coords}, Successful start_coords: {start_coords}, index {i}")
@@ -253,7 +225,7 @@ class MasterMap(Map):
 
         return has_merged
     
-    def update_map_tiles(self, state):
+    def update_map_tiles(self, state: GENERATION_STATE):
         # Run each tile object's update function with a given state
         obj_map = self.obj_map
         for row_idx in range(len(obj_map)):
@@ -263,7 +235,7 @@ class MasterMap(Map):
                     obj_map[row_idx][col_idx] = tile.update(state=state)
                 else:
                     # Turn all None tiles into Wall tiles if it is the end of all merging
-                    obj_map[row_idx][col_idx] = Wall(position=(row_idx, col_idx)) if state == STATE_END_MERGES else None
+                    obj_map[row_idx][col_idx] = Wall(position=(row_idx, col_idx)) if state == GENERATION_STATE.END else None
                             
                 
         self.sync_map_using_obj_map()

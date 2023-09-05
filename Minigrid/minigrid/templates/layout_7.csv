@@ -1,5 +1,5 @@
 Undf(Wall),Undf(Wall),Undf(Wall),Exit,Undf(Wall),Undf(Wall),Undf(Wall)
-Wall,Space,Space,Space,Space,Space,Wall
+Wall(yellow),Space,Space,Space,Space,Space,Wall
 Wall,Space,Wall,Wall,Space,Space,Wall
 Wall,Space,Space,Wall,Space,Space,Wall
 Wall,Space,Space,Space,Space,Space,Wall

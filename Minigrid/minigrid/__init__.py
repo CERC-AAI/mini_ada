@@ -167,7 +167,7 @@ def register_minigrid_envs():
     register(
         id="MiniGrid-CustomV1Env-5x5-v0",
         entry_point="minigrid.envs:CustomV1Env",
-        kwargs={"size": 5},
+        kwargs={},
     )
 
     register(
