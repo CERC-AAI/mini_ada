@@ -15,3 +15,32 @@
 Jonathan Lim wrote up a summary doc of [his finding on BabyAI](https://www.notion.so/Minigrid-BabyAI-4970e49e4c5e4f2588da9a938e517ca2?pvs=21)
 
 Jonathan Lim is finishing up a set up for procedural generation in BabyAI/Minigrid that will allow us to define level layouts via spreadsheets and stitch them together using randomized procedural generation techniques.
+
+We have added a custom environment to Minigrid that rewrites the core step function to allow for object oriented mechanic creation. Objects for this environment should extend the WorldObjCustom class, and have the added callbacks:
+
+```python
+def test_overlap(self, env: CustomV1Env, obj: WorldObj) -> bool:
+        """Can this overlap with the given object? Assume this is symmetric"""
+```
+
+```python
+def stepped_on(self, env: CustomV1Env, approach_position:Point) -> None:
+        """Runs when agent is on the same tile as this object"""
+```
+
+```python
+def do_pickup(self, env: CustomV1Env) -> None:
+        """Runs when agent picks up this object"""
+```
+
+```python
+def do_dropped(self, env: CustomV1Env) -> None:
+        """Runs when agent drops this object"""
+```
+
+```python
+def step(self, env: CustomV1Env) -> None:
+        """Runs each environment step"""
+```
+
+Using these new callbacks we can produce a bunch of new mechanics. For example, a PushBox can be made that is pushed by the agent, but will stop when it hits walls, etc:
