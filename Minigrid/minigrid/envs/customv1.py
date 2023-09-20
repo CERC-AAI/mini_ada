@@ -182,9 +182,21 @@ class CustomV1Env(MiniGridEnv):
         super().__init__(
             mission_space=mission_space, height=height, width=width, max_steps=max_steps, **kwargs
         )
+
+        self.obj_list = []
         # super().__init__(
         #     mission_space=mission_space, grid_size=size, max_steps=max_steps, **kwargs
         # )
+
+    def reset(
+        self,
+        *,
+        seed: int | None = None,
+        options: dict[str, Any] | None = None,
+    ) -> tuple[ObsType, dict[str, Any]]:
+        self.obj_list = []
+
+        return super().reset(seed=seed, options=options)
 
     @staticmethod
     def _gen_mission():
@@ -221,6 +233,8 @@ class CustomV1Env(MiniGridEnv):
                     self.put_obj(object, j, i)
 
                 #self.put_obj(Door("yellow", is_locked=True), obj[0], obj[1])
+
+        self.place_obj(AIAgent())
 
         if not agent_placed:
             self.place_agent()
@@ -307,6 +321,17 @@ class CustomV1Env(MiniGridEnv):
         # Get the contents of the cell in front of the agent
         fwd_cell = self.grid.get(*fwd_pos)
 
+        # Do object step functions
+        sorted_objects = sorted(self.obj_list, key=lambda x: x.step_order)
+
+        for object in sorted_objects:
+            if object.step_order < 0:
+                object.step()
+            else:
+                break
+
+        #Do agent step functions
+
         # Rotate left
         if action == self.actions.left:
             self.agent_dir -= 1
@@ -324,8 +349,7 @@ class CustomV1Env(MiniGridEnv):
             if fwd_cell is None or fwd_cell.can_overlap():
                 self.agent_pos = tuple(fwd_pos)     
             if fwd_cell is not None:
-                if fwd_cell is not None:
-                    fwd_cell.stepped_on(self, approach_position)
+                fwd_cell.stepped_on(self, approach_position)
 
         # Pick up an object
         elif action == self.actions.pickup:
@@ -357,6 +381,17 @@ class CustomV1Env(MiniGridEnv):
 
         else:
             raise ValueError(f"Unknown action: {action}")
+        
+        # Finish object steps
+        
+        for object in sorted_objects:
+            if object.step_order >= 0:
+                object.step(self)
+
+        current_cell = self.grid.get(*self.agent_pos)
+
+        if not current_cell is None:
+            current_cell.hit_agent(self)
 
         if self.step_count >= self.max_steps:
             truncated = True
@@ -383,8 +418,40 @@ class CustomV1Env(MiniGridEnv):
         max_tries=math.inf,
     ):
         if obj is not None and reject_fn is not None:
-            reject_fn = lambda env, pos : not obj.test_overlap(env, env.grid.get(*pos)) and reject_fn(env, pos)
+            reject_fn = lambda env, pos : not obj.test_and_resolve_overlap(env, env.grid.get(*pos)) and reject_fn(env, pos)
         elif obj is not None:
-            reject_fn = lambda env, pos : not obj.test_overlap(env, env.grid.get(*pos))
-            
-        return super().place_obj(obj=obj, top=top, size=size, reject_fn=reject_fn, max_tries=max_tries)
+            reject_fn = lambda env, pos : not obj.test_and_resolve_overlap(env, env.grid.get(*pos))
+
+        place_position = (-1, -1)
+        try:
+            place_position = super().place_obj(obj=obj, top=top, size=size, reject_fn=reject_fn, max_tries=max_tries)
+
+            if (not obj is None and not obj.step_order is np.nan and not obj in self.obj_list):
+                self.obj_list.append(obj)
+        except:
+            pass
+
+        return place_position
+    
+    def put_obj(self, obj: WorldObj, i: int, j: int):
+        """
+        Put an object at a specific position in the grid
+        """
+
+        self.grid.set(i, j, obj)
+        obj.init_pos = (i, j)
+        obj.cur_pos = (i, j)
+
+        if (not obj.step_order is np.nan and not obj in self.obj_list):
+            self.obj_list.append(obj)
+
+    def remove_obj(self, i: int, j: int):
+        """
+        Put an object at a specific position in the grid
+        """
+
+        old_obj = self.grid.get(i, j)
+        self.grid.set(i, j, None)
+
+        if (old_obj in self.obj_list):
+            self.obj_list.remove(old_obj)

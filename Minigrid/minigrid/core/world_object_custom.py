@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING, Tuple
 from minigrid.core.world_object import WorldObj
 
 import numpy as np
+import random
+import math
 
 from minigrid.core.constants import (
     COLOR_TO_IDX,
@@ -11,6 +13,7 @@ from minigrid.core.constants import (
     IDX_TO_COLOR,
     IDX_TO_OBJECT,
     OBJECT_TO_IDX,
+    DIR_TO_VEC,
 )
 
 from minigrid.utils.rendering import (
@@ -18,6 +21,8 @@ from minigrid.utils.rendering import (
     point_in_circle,
     point_in_line,
     point_in_rect,
+    point_in_triangle,
+    rotate_fn,
 )
 
 if TYPE_CHECKING:
@@ -29,8 +34,9 @@ Point = Tuple[int, int]
 
 class WorldObjCustom(WorldObj):
 
-    def test_overlap(self, env: CustomV1Env, obj: WorldObj) -> bool:
-        """Can this overlap with the given object? Assume this is symmetric"""
+    def test_and_resolve_overlap(self, env: CustomV1Env, obj: WorldObj) -> bool:
+        """Can this overlap with the given object? 
+        Assume that the tile is ready to accept the object if we get a true"""
         return obj is None
     
     def can_overlap(self) -> bool:
@@ -68,11 +74,26 @@ class WorldObjCustom(WorldObj):
     def step(self, env: CustomV1Env) -> None:
         """Runs each environment step"""
         return
+    
+    def hit_agent(self, env: CustomV1Env) -> None:
+        """This object moved onto the agent during its step function"""
+        return
+    
+    @property
+    def step_order(self):
+        """
+        Ordering for objects to run their step function. 
+        Agent is priority = 0
+        Larger numbers come later in the queue
+        Priority = np.nan means to not run step on this object
+        """
+
+        return 1
 
 
 class Goal(WorldObjCustom):
     def __init__(self):
-        super().__init__("goal", "green")
+        super().__init__("floor", "green")
 
     def can_overlap(self):
         return True
@@ -140,6 +161,10 @@ class Wall(WorldObjCustom):
 
     def render(self, img):
         fill_coords(img, point_in_rect(0, 1, 0, 1), COLORS[self.color])
+
+    @property
+    def step_order(self):
+        return np.nan
 
 
 class Door(WorldObjCustom):
@@ -284,11 +309,72 @@ class PushBox(WorldObjCustom):
         push_position = self.cur_pos + env.dir_vec
         push_obj = env.grid.get(*push_position)
 
-        if self.test_overlap(env, push_obj):
-            env.grid.set(*self.cur_pos, None)
+        if self.test_and_resolve_overlap(env, push_obj):
+            env.remove_obj(*self.cur_pos)
 
             env.agent_pos = self.cur_pos
 
             env.put_obj(self, *push_position)
 
         return super().stepped_on(env, approach_position)
+
+class AIAgent(WorldObjCustom):
+    def __init__(self, color="blue"):
+        super().__init__("box", color)
+        self.direction = random.randint(0, 3)  # 0: Right, 1: Down, 2: Left, 3: Up
+
+    def render(self, img):
+        fill_coords(img, point_in_circle(0.5, 0.5, 0.31), COLORS[self.color])
+
+    @property
+    def dir_vec(self):
+        """
+        Get the direction vector for the agent, pointing in the direction
+        of forward movement.
+        """
+
+        assert (
+            self.direction >= 0 and self.direction < 4
+        ), f"Invalid direction: {self.direction} is not within range(0, 4)"
+        return DIR_TO_VEC[self.direction]
+
+    def step(self, env: CustomV1Env) -> None:
+        # Get the position in front of the agent
+        fwd_pos = self.cur_pos + self.dir_vec
+
+        # Get the contents of the cell in front of the agent
+        fwd_cell = env.grid.get(*fwd_pos)
+
+        if fwd_cell is None or fwd_cell.test_and_resolve_overlap(env, fwd_cell):
+            env.remove_obj(*self.cur_pos)
+            env.put_obj(self, *fwd_pos)
+        else: 
+            # Turn left
+            self.direction = (self.direction + 1) % 4
+
+    def render(self, img):
+        c = COLORS[self.color]
+
+        if self.direction is not None:
+            tri_fn = point_in_triangle(
+                (0.12, 0.19),
+                (0.87, 0.50),
+                (0.12, 0.81),
+            )
+
+            print(self.direction)
+
+            # Rotate the agent based on its direction
+            tri_fn = rotate_fn(tri_fn, cx=0.5, cy=0.5, theta=0.5 * math.pi * self.direction)
+            fill_coords(img, tri_fn, c)
+
+    def encode(self) -> tuple[int, int, int]:
+        """Hack the custom value while we think of a new indexing method"""
+        return (OBJECT_TO_IDX[self.type], COLOR_TO_IDX[self.color], 100 + self.direction)
+    
+
+    def hit_agent(self, env: CustomV1Env) -> None:
+        env.add_reward(-1)
+        env.terminate()
+        return
+    
