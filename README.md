@@ -9,6 +9,18 @@
         - [Discrete Key-Value Bottleneck](https://www.notion.so/a6de73986797420f9f342eec16403279?pvs=21)
     - And also getting a working version of Muesli set up (and ultimately distributed):
         - [Muesli](https://www.notion.so/2934eda190bb4aaca178447019c78e49?pvs=21)
+     
+## Main fles in Minigrid
+
+To run a test env just run from the Minigrid folder:
+
+```python
+python minigrid/manual_control.py
+```
+
+The CustomEnv is defined in Minigrid/minigrid/envs/customv1.py
+We have OOP objects that work with CustomEnv defined in Minigrid/minigrid/core/world_object_custom.py
+Finally, the code for generating new environments can be found in Minigrid/minigrid/templates
 
 ## Current Progress
 
