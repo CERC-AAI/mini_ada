@@ -1,0 +1,8 @@
+numpy>=1.18.0
+gymnasium>=0.26
+pygame>=2.2.0
+
+[testing]
+pytest>=7.0.1
+pytest-mock>=3.10.0
+matplotlib>=3.0

@@ -1,0 +1,7 @@
+Wall,Wall,Wall,Wall,Wall,Wall,Wall
+Wall,Space,Space,Wall,Space,Space,Wall
+Wall,Space,Wall,Space,Space,Space,Exit
+Wall,Space,Space,Wall,Space,Space,Wall
+Wall,Agent,Space,Space,Space,Space,Wall
+Wall,Space,Wall,Space,Space,Space,Wall
+Wall,Wall,Exit,Wall,Wall,Wall,Wall
