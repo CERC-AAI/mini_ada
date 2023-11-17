@@ -138,13 +138,18 @@ class MasterMap(Map):
             for c in range(len(submap[0])):
                 row_idx = start_coords[0]+r
                 col_idx = start_coords[1]+c
-                mastermap_tile = self.obj_map[row_idx][col_idx]
-                submap_tile = submap[r][c]
-                    
                 if (row_idx < 0 or row_idx >= mastermap_height 
                                 or col_idx < 0 
-                                or col_idx >= mastermap_width 
-                                or (mastermap_tile is not None and not mastermap_tile.can_overlap_tile(submap_tile))
+                                or col_idx >= mastermap_width):
+                    _has_space = False
+                    break
+                else:
+                    mastermap_tile = self.obj_map[row_idx][col_idx]
+
+                submap_tile = submap[r][c]
+
+                if (mastermap_tile is not None
+                    and not mastermap_tile.can_overlap_tile(submap_tile) # todo check
                    ):
                     _has_space = False
                     break
@@ -173,36 +178,38 @@ class MasterMap(Map):
         submap_exits_coords_list = submap_obj.get_exit_coords_list()
         has_merged = False
 
+        # shuffle the coordinates before doing for loops
+        random.shuffle(mastermap_exits_coords_list)
+        random.shuffle(submap_exits_coords_list)
+        
         for mastermap_coords in mastermap_exits_coords_list:
             for submap_coords in submap_exits_coords_list:
                 
                 # Attempt overlap, left, right, up, down, merges wrt master map
-                for i, direction in enumerate(directions):
-                    print(i, direction)
-                    start_coords = (mastermap_coords[0]-submap_coords[0]+direction[0], mastermap_coords[1]-submap_coords[1]+direction[1])
-                
-                    if self._can_merge(submap_obj, start_coords) is True:
-                        print("mergeable")
-                        self.merge_maps(submap_obj, start_coords)
-                        has_merged = True
+                start_coords = (mastermap_coords[0]-submap_coords[0], mastermap_coords[1]-submap_coords[1])
+            
+                if self._can_merge(submap_obj, start_coords) is True:
+                    print("mergeable")
+                    self.merge_maps(submap_obj, start_coords)
+                    has_merged = True
 
-                        mastermap_tile_r, mastermap_tile_c = mastermap_coords[0], mastermap_coords[1]
-                        submap_merge_tile_r, submap_merge_tile_c = mastermap_coords[0]+direction[0], mastermap_coords[1]+direction[1]
-                        mastermap_tile = self.obj_map[mastermap_tile_r][mastermap_tile_c]
-                        submap_merge_tile = self.obj_map[submap_merge_tile_r][submap_merge_tile_c]
+                    mastermap_tile_r, mastermap_tile_c = mastermap_coords[0], mastermap_coords[1]
+                    submap_merge_tile_r, submap_merge_tile_c = mastermap_coords[0], mastermap_coords[1]
+                    mastermap_tile = self.obj_map[mastermap_tile_r][mastermap_tile_c]
+                    submap_merge_tile = self.obj_map[submap_merge_tile_r][submap_merge_tile_c]
 
-                        # Update the mastermap_tile
-                        if mastermap_tile is not None:
-                            self.obj_map[mastermap_tile_r][mastermap_tile_c] = mastermap_tile.update(GENERATION_STATE.MERGE)                        
-                            
-                        # Non-Overlapping merge: also need to update the submap tile
-                        if mastermap_tile_r != submap_merge_tile_r or mastermap_tile_c != submap_merge_tile_c:
-                            if submap_merge_tile is not None:
-                                self.obj_map[submap_merge_tile_r][submap_merge_tile_c] = submap_merge_tile.update(GENERATION_STATE.MERGE)
+                    # Update the mastermap_tile
+                    if mastermap_tile is not None:
+                        self.obj_map[mastermap_tile_r][mastermap_tile_c] = mastermap_tile.update(GENERATION_STATE.MERGE)                        
+                        
+                    # Non-Overlapping merge: also need to update the submap tile
+                    if mastermap_tile_r != submap_merge_tile_r or mastermap_tile_c != submap_merge_tile_c:
+                        if submap_merge_tile is not None:
+                            self.obj_map[submap_merge_tile_r][submap_merge_tile_c] = submap_merge_tile.update(GENERATION_STATE.MERGE)
 
 
-                        print(f"Master coords: {mastermap_coords}, submap_coords: {submap_coords}, Successful start_coords: {start_coords}, index {i}")
-                        break
+                    print(f"Master coords: {mastermap_coords}, submap_coords: {submap_coords}, Successful start_coords: {start_coords}")
+                    break
                 if has_merged:
                     break
             if has_merged:
@@ -213,7 +220,7 @@ class MasterMap(Map):
         has_merged = False
         submap = submap_obj
         # Try rotating map up to 270 degrees
-        num_rotations = 3 if rotation else 1
+        num_rotations = 4 if rotation else 1 # todo, check if 4 instead of 3 works
         for i in range(num_rotations):
             has_merged = self.left_right_up_down_merge(submap)                
             submap = SubMap.rotate(submap)
@@ -248,7 +255,6 @@ class MasterMap(Map):
     def from_csv(cls, filepath):
         layout_map = pd.read_csv(filepath, header=None).to_numpy().tolist()
         return cls(layout_map)
-    
     
 class SubMap(Map):
     
