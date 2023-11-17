@@ -89,7 +89,7 @@ class Space(Tile):
         super().__init__(tile_type="Space", position=position, params=params)
     
     def can_overlap_tile(self, incoming_tile: Tile) -> bool:
-        return True
+        return False
     
     def resolve_overlap(self, incoming_tile: Tile) -> Tile:
         return incoming_tile
@@ -134,3 +134,43 @@ class Undf(Tile):
             new_tile, _ = get_class_from_tile_str(self.params[0])
             new_tile = new_tile(position=self.position, params=self.params[1:])
             return new_tile
+
+class ExitRoom(Tile):
+    def __init__(self, position: Point=(0,0), params=[]):
+        super().__init__(tile_type="ExitRoom", position=position, params=params)
+    
+    def can_overlap_tile(self, incoming_tile: Tile) -> bool:
+        if incoming_tile.tile_type == "ExitCorr":
+            return True
+        else:
+            return False
+    
+    def resolve_overlap(self, incoming_tile: Tile) -> Tile:
+        return incoming_tile
+    
+    def update(self, state: GENERATION_STATE) -> Tile:
+        if state == GENERATION_STATE.MERGE:
+            return Space(position=self.position)
+        
+        elif state == GENERATION_STATE.END:
+            return Wall(position=self.position)
+
+class ExitCorr(Tile):
+    def __init__(self, position: Point=(0,0), params=[]):
+        super().__init__(tile_type="ExitCorr", position=position, params=params)
+    
+    def can_overlap_tile(self, incoming_tile: Tile) -> bool:
+        if incoming_tile.tile_type == "ExitRoom":
+            return True
+        else:
+            return False
+    
+    def resolve_overlap(self, incoming_tile: Tile) -> Tile:
+        return incoming_tile
+    
+    def update(self, state: GENERATION_STATE) -> Tile:
+        if state == GENERATION_STATE.MERGE:
+            return Space(position=self.position)
+        
+        elif state == GENERATION_STATE.END:
+            return Wall(position=self.position)
