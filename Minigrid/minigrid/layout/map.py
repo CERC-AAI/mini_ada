@@ -119,7 +119,7 @@ class MasterMap(Map):
         for row_idx in range(len(_map)):
             for col_idx in range(len(_map[0])):
                 # TODO: Handle Tile
-                if _map[row_idx][col_idx] == 'Exit':
+                if _map[row_idx][col_idx] == 'Exit' or _map[row_idx][col_idx] == 'ExitCorr' or _map[row_idx][col_idx] == 'ExitRoom':
                     exits.append((row_idx, col_idx))
                     
         self.exit_coords_list = exits
@@ -173,7 +173,6 @@ class MasterMap(Map):
     def left_right_up_down_merge(self, submap_obj):
         submap = submap_obj.obj_map
         
-        directions = [(0, 0), (0, -1), (0, 1), (-1, 0), (1, 0)]
         mastermap_exits_coords_list = self.get_exit_coords_list()
         submap_exits_coords_list = submap_obj.get_exit_coords_list()
         has_merged = False
@@ -269,7 +268,7 @@ class SubMap(Map):
         for row_idx in range(len(_map)):
             for col_idx in range(len(_map[0])):
                 # TODO: Handle Tile
-                if _map[row_idx][col_idx] == 'Exit':
+                if _map[row_idx][col_idx] == 'Exit' or _map[row_idx][col_idx] == 'ExitCorr' or _map[row_idx][col_idx] == 'ExitRoom':
                     exits.append((row_idx, col_idx))
                     
         self.exit_coords_list = exits
