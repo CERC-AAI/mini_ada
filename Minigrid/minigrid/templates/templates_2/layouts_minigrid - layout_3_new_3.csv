@@ -1,0 +1,8 @@
+Undf(Wall),Undf(Wall),Exit,Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall)
+Undf(Wall),Space,Space,Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Undf(Wall),Space,Space,Undf(Wall)
+Exit,Space,Undf(Wall),Undf(Wall),Undf(Wall),Space,Exit
+Undf(Wall),Space,Space,Undf(Wall),Space,Space,Undf(Wall)
+Undf(Wall),Space,Undf(Wall),Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Space,Space,Space,Undf(Wall)
+Undf(Wall),Undf(Wall),Undf(Wall),Exit,Undf(Wall),Undf(Wall),Undf(Wall)

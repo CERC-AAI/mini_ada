@@ -1,7 +1,7 @@
-Wall,Wall,Wall,Wall,Wall,Wall,Wall
-Wall,Space,Space,Wall,Space,Space,Wall
-Wall,Space,Space,Space,Space,Space,Wall
-Wall,Space,Space,Wall,Space,Space,Wall
-Wall,Space,Space,Space,Space,Space,Wall
-Wall,Space,Wall,Space,Space,Space,Wall
-Wall,Wall,Wall,Exit,Wall,Wall,Wall
+Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall)
+Undf(Wall),Space,Space,Undf(Wall),Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Undf(Wall),Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Undf(Wall),Space,Space,Space,Undf(Wall)
+Undf(Wall),Undf(Wall),Undf(Wall),Exit,Undf(Wall),Undf(Wall),Undf(Wall)
