@@ -28,6 +28,8 @@ class Map:
                 obj = None
                 if tile_class is not None:
                     obj = tile_class(position=(row_idx, col_idx), params=params)
+                    #if obj.tile_type == "ExitCorr":
+                        #breakpoint()
 
                 row.append(obj)
             obj_map.append(row)
@@ -66,7 +68,8 @@ class Map:
         self.map = _map
         
         return _map
-    
+
+# todo look at this class
 class MasterMap(Map):    
     def __init__(self, height=None, width=None, layout_map=None):
         if layout_map is None:
@@ -119,8 +122,9 @@ class MasterMap(Map):
         for row_idx in range(len(_map)):
             for col_idx in range(len(_map[0])):
                 # TODO: Handle Tile
-                if _map[row_idx][col_idx] == 'Exit' or _map[row_idx][col_idx] == 'ExitCorr' or _map[row_idx][col_idx] == 'ExitRoom':
-                    exits.append((row_idx, col_idx))
+                if _map[row_idx][col_idx] != None:
+                    if "Exit" in _map[row_idx][col_idx]:
+                        exits.append((row_idx, col_idx))
                     
         self.exit_coords_list = exits
         
@@ -138,9 +142,11 @@ class MasterMap(Map):
             for c in range(len(submap[0])):
                 row_idx = start_coords[0]+r
                 col_idx = start_coords[1]+c
+                # todo add check that row_idx
                 if (row_idx < 0 or row_idx >= mastermap_height 
                                 or col_idx < 0 
                                 or col_idx >= mastermap_width):
+                    #breakpoint()
                     _has_space = False
                     break
                 else:
@@ -173,11 +179,19 @@ class MasterMap(Map):
     def left_right_up_down_merge(self, submap_obj):
         submap = submap_obj.obj_map
         
+        #directions = [(0, 0), (0, -1), (0, 1), (-1, 0), (1, 0)]
+        directions = [(0, 0), (0, -1), (0, 1), (-1, 0), (1, 0)]
+        
         mastermap_exits_coords_list = self.get_exit_coords_list()
+        
         submap_exits_coords_list = submap_obj.get_exit_coords_list()
+        #breakpoint()
+        #print("mastermat EXITS:", mastermap_exits_coords_list)
+        #print("submap EXITS:", submap_exits_coords_list)
+        #breakpoint()
         has_merged = False
 
-        # shuffle the coordinates before doing for loops
+        # todo to shuffle the coordinates before doing for loops, done
         random.shuffle(mastermap_exits_coords_list)
         random.shuffle(submap_exits_coords_list)
         
@@ -185,6 +199,8 @@ class MasterMap(Map):
             for submap_coords in submap_exits_coords_list:
                 
                 # Attempt overlap, left, right, up, down, merges wrt master map
+                #for i, direction in enumerate(directions):
+                #print(i, direction)
                 start_coords = (mastermap_coords[0]-submap_coords[0], mastermap_coords[1]-submap_coords[1])
             
                 if self._can_merge(submap_obj, start_coords) is True:
@@ -219,6 +235,12 @@ class MasterMap(Map):
         has_merged = False
         submap = submap_obj
         # Try rotating map up to 270 degrees
+        
+        # randomly rotate first
+        randnum = np.random.randint(0, 4)
+        for i in range(randnum):
+            submap = SubMap.rotate(submap)
+
         num_rotations = 4 if rotation else 1 # todo, check if 4 instead of 3 works
         for i in range(num_rotations):
             has_merged = self.left_right_up_down_merge(submap)                
@@ -227,6 +249,7 @@ class MasterMap(Map):
                 self.sync_map_using_obj_map()
                 break
         if not has_merged:
+            #breakpoint()
             print(f"No valid merge rotation found!")
 
         return has_merged
@@ -255,6 +278,7 @@ class MasterMap(Map):
         layout_map = pd.read_csv(filepath, header=None).to_numpy().tolist()
         return cls(layout_map)
     
+# todo look at this class
 class SubMap(Map):
     
     def __init__(self, layout_map, weight=None):
@@ -268,8 +292,9 @@ class SubMap(Map):
         for row_idx in range(len(_map)):
             for col_idx in range(len(_map[0])):
                 # TODO: Handle Tile
-                if _map[row_idx][col_idx] == 'Exit' or _map[row_idx][col_idx] == 'ExitCorr' or _map[row_idx][col_idx] == 'ExitRoom':
-                    exits.append((row_idx, col_idx))
+                if _map[row_idx][col_idx] != None:
+                    if "Exit" in _map[row_idx][col_idx]:
+                        exits.append((row_idx, col_idx))
                     
         self.exit_coords_list = exits
         

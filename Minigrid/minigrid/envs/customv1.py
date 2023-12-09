@@ -25,6 +25,10 @@ from minigrid.core.actions import Actions
 from minigrid.core.constants import COLOR_NAMES, DIR_TO_VEC, TILE_PIXELS
 from minigrid.core.grid import Grid
 from minigrid.core.mission import MissionSpace
+#from minigrid.templates.mastermap_generator import generate_mastermap # todo
+from minigrid.templates.mastermap_generator import generate_mastermap
+
+from minydra import MinyDict
 
 LAYOUT_PATH = Path(__file__).resolve().parent.parent / 'templates/master_layout.csv'
 
@@ -105,6 +109,7 @@ def split_function_definition(definition_string):
         else:
             raise ValueError("Invalid function definition format")
 
+# todo get familiar with the class
 class CustomV1Env(MiniGridEnv):
  
     """
@@ -159,7 +164,7 @@ class CustomV1Env(MiniGridEnv):
 
     """
 
-    def __init__(self, max_steps: int | None = None, **kwargs):
+    def __init__(self, config_path, max_steps: int | None = None, **kwargs):
         print(kwargs)
         layout = LAYOUT_PATH
         if "layout" in kwargs:
@@ -167,17 +172,23 @@ class CustomV1Env(MiniGridEnv):
             layout = Path(__file__).resolve().parent.parent / f'templates/{layout}.csv'
         
         self.map_arr = pd.read_csv(layout, header=None).to_numpy()
-        
-        size = len(self.map_arr)
+        self.default_map_arr = self.map_arr
+        #breakpoint()
+        self.config_path = config_path # todo daria check
+        self.args = MinyDict.from_yaml(config_path)
+        #self.seed(42) # todo this doesn't work
         #self.map_info = get_obj_coords(map_arr, OBJ_DICT)
         #print(self.map_info)
         # height, width = self.map_info['Height']+2, self.map_info['Width']+2
         #height, width = self.map_info['Height'], self.map_info['Width']
-
-        height, width = size, size
-
+        
+        height = self.args.map.height
+        width = self.args.map.width
+        #height = self.args.map.width
+        #width = self.args.map.height
+        
         if max_steps is None:
-            max_steps = 10 * size**2
+            max_steps = 10 * height * width
         mission_space = MissionSpace(mission_func=self._gen_mission)
         super().__init__(
             mission_space=mission_space, height=height, width=width, max_steps=max_steps, **kwargs
@@ -188,6 +199,12 @@ class CustomV1Env(MiniGridEnv):
         #     mission_space=mission_space, grid_size=size, max_steps=max_steps, **kwargs
         # )
 
+    # todo task load a random map or a generate a new map
+    # either get a large corpus of maps or generate maps on the fly (possibly with a new seed each time)
+
+    """
+    resets an episode, gets recalled each new episode
+    """
     def reset(
         self,
         *,
@@ -195,6 +212,28 @@ class CustomV1Env(MiniGridEnv):
         options: dict[str, Any] | None = None,
     ) -> tuple[ObsType, dict[str, Any]]:
         self.obj_list = []
+
+        self.seed_n = np.random.randint(1000000) # todo save then in logs or wandb
+        #self.seed(self.seed_n)
+
+        # todo daria set a bunch of parameters, where i'm loading from (for 1. get a large corpus of maps)
+
+        # todo write a code for generating masterms on the fly as well as pulling ready to use mastermaps using the config
+        #breakpoint()
+        #for i in range():
+        #    mmap = generate_mastermap()
+       #     #mmap.to_csv(f"{LAYOUT_PATH}/master_layout_{i}.csv")
+        #breakpoint()
+        mmap = generate_mastermap(self.config_path)
+        self.map_arr = np.array(mmap.sync_map_using_obj_map())
+        self.default_map_arr = self.map_arr
+        #breakpoint()
+        mmap.to_csv(f"{self.args.map.output_folder}/master_layout_101.csv")
+        #mmap.to_csv(f"{LAYOUT_PATH}/master_layout_101.csv")
+        
+        #height = len(self.map_arr)
+        #width = len(self.map_arr[0])
+        #breakpoint()
 
         return super().reset(seed=seed, options=options)
 
@@ -205,19 +244,25 @@ class CustomV1Env(MiniGridEnv):
     def _gen_grid(self, width, height):
         # Note: Minigrid uses (col, row) indexing, with top being (0,0) by default
         # Create an empty grid
-        self.grid = Grid(width, height)
+        #self.grid = Grid(width, height)
+        self.grid = Grid(height, width)
 
         module = importlib.import_module("minigrid.core.world_object_custom")
 
         agent_placed = False
         for i in range(self.width):
             for j in range(self.height):
+        #for i in range(self.height):
+        #    for j in range(self.width):
+                #breakpoint()
+                #object_string = self.map_arr[j, i] # daria we swapped the coordinates
                 object_string = self.map_arr[i, j]
 
                 object_name, params = split_function_definition(object_string)
 
                 if object_name == "Agent":
                     self.agent_pos = (j, i)
+                    #self.agent_pos = (i, j)
 
                     agent_placed = True
 
@@ -231,6 +276,7 @@ class CustomV1Env(MiniGridEnv):
                     object = object_class(*params)
 
                     self.put_obj(object, j, i)
+                    #self.put_obj(object, i, j)
 
                 #self.put_obj(Door("yellow", is_locked=True), obj[0], obj[1])
 
@@ -403,8 +449,21 @@ class CustomV1Env(MiniGridEnv):
 
         return obs, self.reward, self.terminated, truncated, {}
     
+    # todo daria add a similar function terminate_trial, that resets the environment (does all the stuff that resets stuff without randomization / returns the environment to it's original state)
     def terminate(self):
         self.terminated = True
+
+    def terminate_trial(self):
+        # call self.map_arr here after calling reset to change if changing self.map_arr in reset changes it everywhere
+        self.terminated = True
+
+    """
+    restarts a trial
+    """
+    def restart():
+        # todo daria set seed
+        #self.seed(self.seed_n)
+        return None
 
     def add_reward(self, reward:float):
         self.reward += reward
@@ -441,6 +500,9 @@ class CustomV1Env(MiniGridEnv):
         self.grid.set(i, j, obj)
         obj.init_pos = (i, j)
         obj.cur_pos = (i, j)
+        #self.grid.set(j, i, obj)
+        #obj.init_pos = (j, i)
+        #obj.cur_pos = (j, i)
 
         if (not obj.step_order is np.nan and not obj in self.obj_list):
             self.obj_list.append(obj)
@@ -452,6 +514,8 @@ class CustomV1Env(MiniGridEnv):
 
         old_obj = self.grid.get(i, j)
         self.grid.set(i, j, None)
+        #old_obj = self.grid.get(j, i)
+        #self.grid.set(j, i, None)
 
         if (old_obj in self.obj_list):
             self.obj_list.remove(old_obj)
