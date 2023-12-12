@@ -9,12 +9,53 @@
         - [Discrete Key-Value Bottleneck](https://www.notion.so/a6de73986797420f9f342eec16403279?pvs=21)
     - And also getting a working version of Muesli set up (and ultimately distributed):
         - [Muesli](https://www.notion.so/2934eda190bb4aaca178447019c78e49?pvs=21)
+     
+## Main files in Minigrid
+
+To run a test env just run from the Minigrid folder:
+
+```python
+python minigrid/manual_control.py
+```
+
+The CustomEnv is defined in Minigrid/minigrid/envs/customv1.py
+We have OOP objects that work with CustomEnv defined in Minigrid/minigrid/core/world_object_custom.py
+Finally, the code for generating new environments can be found in Minigrid/minigrid/templates
 
 ## Current Progress
 
 Jonathan Lim wrote up a summary doc of [his finding on BabyAI](https://www.notion.so/Minigrid-BabyAI-4970e49e4c5e4f2588da9a938e517ca2?pvs=21)
 
 Jonathan Lim is finishing up a set up for procedural generation in BabyAI/Minigrid that will allow us to define level layouts via spreadsheets and stitch them together using randomized procedural generation techniques.
+
+We have added a custom environment to Minigrid that rewrites the core step function to allow for object oriented mechanic creation. Objects for this environment should extend the WorldObjCustom class, and have the added callbacks:
+
+```python
+def test_overlap(self, env: CustomV1Env, obj: WorldObj) -> bool:
+        """Can this overlap with the given object? Assume this is symmetric"""
+```
+
+```python
+def stepped_on(self, env: CustomV1Env, approach_position:Point) -> None:
+        """Runs when agent is on the same tile as this object"""
+```
+
+```python
+def do_pickup(self, env: CustomV1Env) -> None:
+        """Runs when agent picks up this object"""
+```
+
+```python
+def do_dropped(self, env: CustomV1Env) -> None:
+        """Runs when agent drops this object"""
+```
+
+```python
+def step(self, env: CustomV1Env) -> None:
+        """Runs each environment step"""
+```
+
+Using these new callbacks we can produce a bunch of new mechanics. For example, a PushBox can be made that is pushed by the agent, but will stop when it hits walls, etc:
 
 ## How to run
 
