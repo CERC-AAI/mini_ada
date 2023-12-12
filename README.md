@@ -135,4 +135,4 @@ A map is generated procedurally given the templates (csv files) you have provide
 ### Manually controled run
 
 1. Change paths to templates as described in [the instruction](https://github.com/AGI-Collective/mini_ada/edit/map_update/README.md#how-to-provide-paths-to-templates). Take note of [1](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_4/README_templates_4.md), [2](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_mazes/README_mazes.md), [3](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_5/README_templates_5.md), [4](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_3/README_templates_3.md)
-2. Run `Minigrid/minigrid/manual_control.py`
+2. Run `python Minigrid/minigrid/manual_control.py`
