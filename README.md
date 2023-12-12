@@ -22,16 +22,19 @@ Jonathan Lim is finishing up a set up for procedural generation in BabyAI/Minigr
 
 
 A map is generated procedurally given the templates (csv files) you have provided.
-Provide a path or multiple paths to a csv file or a directory containing csv files under `layout_connor` in Minigrid/minigrid/templates/config.yaml. Provide a non-negative value for each path:
+1. Provide a path or multiple paths to a csv file or a directory containing csv files under `layout_connor` in Minigrid/minigrid/templates/config.yaml. Provide a non-negative value for each path:
 ```
 layout_connor:
-  - path: /some/path/to/template
+  - path: /some/path/to/template.csv
     value: 1.0
-  - path: /some/path/to/another/template
+  - path: /some/path/to/directory/
     value: 2.0
+  - path: /some/exluded/path
+    value: 0.0
 ```
-Run `python Minigrid/minigrid/templates/template_generator.py`
+2. Run `python Minigrid/minigrid/templates/template_generator.py`
 
-### Manual control run
+### Manually controled run
 
-Run `Minigrid/minigrid/manual_control.py`
+1. Change paths to templates as described in Map generation.
+2. Run `Minigrid/minigrid/manual_control.py`
