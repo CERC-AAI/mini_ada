@@ -32,6 +32,11 @@ def generate_mastermap(config_file_path: str) -> MasterMap:
 
 
     args = MinyDict.from_yaml(config_file_path)
+
+    if args.root_folder == "__minigrid_folder__":
+        args.root_folder = f"{Path(__file__).parent.parent.resolve()}"
+    elif args.root_folder == "__miniada_folder__":
+        args.root_folder = f"{Path(__file__).parent.parent.parent.parent.resolve()}"
     
     maps = {} # maps is a dict with path: value, and it updates value on each entry of a map
 
@@ -40,19 +45,21 @@ def generate_mastermap(config_file_path: str) -> MasterMap:
         # TODO make sure that directory paths ending with / and without are processed the same
         print(i)
 
-        print(os. path. isdir(i.path))
+        print(os.path.isdir(i.path))
 
         print('starts with layout', i.path.startswith('layout'))
-        
-        assert os.path.exists(i.path)
-        file_list = []
-        if os.path.isdir(i.path): # if path is a directory, we add each .csv file that starts with "layout" in its name
-            if not i.path.endswith('/'):
-                i.path = i.path + '/' # todo , temporary solution
-            file_list = glob.glob(f"{i.path}layout*.csv")
 
-        elif os.path.isfile(i.path):
-            file_path = i.path
+        full_path = f"{args.root_folder}/{i.path}"
+        
+        assert os.path.exists(full_path)
+        file_list = []
+        if os.path.isdir(full_path): # if path is a directory, we add each .csv file that starts with "layout" in its name
+            if not full_path.endswith('/'):
+                full_path = full_path + '/' # todo , temporary solution
+            file_list = glob.glob(f"{full_path}layout*.csv")
+
+        elif os.path.isfile(full_path):
+            file_path = full_path
             if file_path.endswith('.csv'):
                 file_list = [file_path]
 
@@ -62,8 +69,8 @@ def generate_mastermap(config_file_path: str) -> MasterMap:
         print(maps)
         
         print(len(glob.glob("/home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/layout*.csv")))
-        print("ends with .csv", i.path.endswith('.csv'))
-        print(i.path)
+        print("ends with .csv", full_path.endswith('.csv'))
+        print(full_path)
         print(i.value)
 
     j = 0
@@ -85,6 +92,7 @@ def generate_mastermap(config_file_path: str) -> MasterMap:
     mmap = MasterMap(height=args.map.height, width=args.map.width)
 
     timestamp = now()
+    timestamp = timestamp.replace(':', "_")
     log_path = f'{LAYOUT_PATH}/log_{timestamp}.txt'
     
     args.pretty_print()

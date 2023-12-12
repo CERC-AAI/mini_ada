@@ -13,6 +13,7 @@ from typing import Any, Iterable, SupportsFloat, TypeVar
 import importlib
 import re
 import inspect
+import os
 
 import gymnasium as gym
 import numpy as np
@@ -176,6 +177,12 @@ class CustomV1Env(MiniGridEnv):
         #breakpoint()
         self.config_path = config_path # todo daria check
         self.args = MinyDict.from_yaml(config_path)
+
+        
+        if self.args.root_folder == "__minigrid_folder__":
+            self.args.root_folder = f"{Path(__file__).parent.parent.resolve()}"
+        elif self.args.root_folder == "__miniada_folder__":
+            self.args.root_folder = f"{Path(__file__).parent.parent.parent.parent.resolve()}"
         #self.seed(42) # todo this doesn't work
         #self.map_info = get_obj_coords(map_arr, OBJ_DICT)
         #print(self.map_info)
@@ -228,7 +235,8 @@ class CustomV1Env(MiniGridEnv):
         self.map_arr = np.array(mmap.sync_map_using_obj_map())
         self.default_map_arr = self.map_arr
         #breakpoint()
-        mmap.to_csv(f"{self.args.map.output_folder}/master_layout_101.csv")
+        os.makedirs(f"{self.args.root_folder}/{self.args.map.output_folder}", exist_ok=True)
+        mmap.to_csv(f"{self.args.root_folder}/{self.args.map.output_folder}/master_layout_101.csv")
         #mmap.to_csv(f"{LAYOUT_PATH}/master_layout_101.csv")
         
         #height = len(self.map_arr)

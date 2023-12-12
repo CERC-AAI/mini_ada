@@ -5,6 +5,7 @@ from __future__ import annotations
 import gymnasium as gym
 import pygame
 from gymnasium import Env
+import pathlib
 
 from minigrid.core.actions import Actions
 from minigrid.minigrid_env import MiniGridEnv
@@ -122,7 +123,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--config-path",
         type=str,
-        default="/home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/config.yaml", # todo daria move config to a permanent place, change the path
+        default=f"{pathlib.Path(__file__).parent.resolve()}./templates/config.yaml", # todo daria move config to a permanent place, change the path
         help="set the path to the config.yaml that contains parameters for layouts and master map"
     )
 
