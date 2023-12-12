@@ -15,3 +15,23 @@
 Jonathan Lim wrote up a summary doc of [his finding on BabyAI](https://www.notion.so/Minigrid-BabyAI-4970e49e4c5e4f2588da9a938e517ca2?pvs=21)
 
 Jonathan Lim is finishing up a set up for procedural generation in BabyAI/Minigrid that will allow us to define level layouts via spreadsheets and stitch them together using randomized procedural generation techniques.
+
+## How to run
+
+### Map generation
+
+
+A map is generated procedurally given the templates (csv files) you have provided.
+Provide a path or multiple paths to a csv file or a directory containing csv files under `layout_connor` in Minigrid/minigrid/templates/config.yaml. Provide a non-negative value for each path:
+```
+layout_connor:
+  - path: /some/path/to/template
+    value: 1.0
+  - path: /some/path/to/another/template
+    value: 2.0
+```
+Run `python Minigrid/minigrid/templates/template_generator.py`
+
+### Manual control run
+
+Run `Minigrid/minigrid/manual_control.py`
