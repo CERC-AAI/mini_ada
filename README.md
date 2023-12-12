@@ -10,7 +10,7 @@
     - And also getting a working version of Muesli set up (and ultimately distributed):
         - [Muesli](https://www.notion.so/2934eda190bb4aaca178447019c78e49?pvs=21)
      
-## Main fles in Minigrid
+## Main files in Minigrid
 
 To run a test env just run from the Minigrid folder:
 
