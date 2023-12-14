@@ -1,0 +1,3 @@
+Undf(Wall),Exit(Maze),Undf(Wall)
+Undf(Wall),Space,Undf(Wall)
+Undf(Wall),Exit(Maze),Undf(Wall)

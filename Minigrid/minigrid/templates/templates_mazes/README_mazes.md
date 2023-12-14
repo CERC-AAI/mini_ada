@@ -1,0 +1,4 @@
+This folder contains templates of Maze bits. At this point, a Maze bit only connects with a Maze bit, which means if you want to build Mazes,you might want to consider specifying `/mini_ada/Minigrid/minigrid/templates/templates_mazes` as the only path to your layouts. It will still work if you do not, but it will lead to more time needed to generate a master map. This is due to the algorithm randomly choosing a layout among the directories you have provided, in order to add it to the master map at each step of the generational process, until the stopping criterion is met.
+
+
+We intend to change this behaviour in a near future update.

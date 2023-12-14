@@ -1,0 +1,1 @@
+This folder contains a single template of an open space concept room.

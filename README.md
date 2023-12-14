@@ -56,3 +56,83 @@ def step(self, env: CustomV1Env) -> None:
 ```
 
 Using these new callbacks we can produce a bunch of new mechanics. For example, a PushBox can be made that is pushed by the agent, but will stop when it hits walls, etc:
+
+## How to config.yaml
+
+### How to provide paths to templates
+
+Where? -> Under `layout_connor` section in [`Minigrid/minigrid/templates/config.yaml`](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/config.yaml).
+
+Your path can be a .csv file or a directory containing .csv files. You can provide one or several paths. Paths must come in pairs of path and value:
+```
+layout_connor:
+  - path: /path/to/some/template.csv
+    value: 1.0
+  - path: /path/to/some/directory/
+    value: 2.0
+```
+Higher value means a higher chance of the path being used in a map generation. Values do not have to sum up to 1.
+
+Assigning a value to a directory means each .csv file in the directory will be assigned the same value. For example, assuming `/path/to/some/directory/` has 3 files: `template_1.csv`, `template_2.csv`, `template_3.csv`, then this
+```
+layout_connor:
+  - path: /path/to/some/directory/
+    value: 2.0
+```
+and this
+```
+layout_connor:
+  - path: /path/to/some/directory/template_1.csv
+    value: 2.0
+  - path: /path/to/some/directory/template_2.csv
+    value: 2.0
+  - path: /path/to/some/directory/template_3.csv
+    value: 2.0
+```
+yield the same result.
+
+Value must be a non-negative number. Assigning 0.0 to a path exludes the path:
+```
+layout_connor:
+  - path: /some/path/to/a/template.csv
+    value: 1.0
+  - path: /some/path/to/a/directory/
+    value: 2.0
+  - path: /some/exluded/path
+    value: 0.0
+```
+Your paths can be repeated. If a path is repeated with a new value, its value will be overwritten:
+```
+layout_connor:
+  - path: /path/to/some/template.csv
+    value: 1.0
+  - path: /path/to/some/template.csv
+    value: 2.0
+```
+now `/path/to/some/template.csv` has a value of 2.0.
+
+
+Overwriting of values is useful, for example, in case you want to assign a different value to a file within a directory:
+```
+layout_connor:
+  - path: /some/path/to/directory_1
+    value: 1.0
+  - path: /some/path/to/directory_1/template_1.csv
+    value: 2.0
+```
+will result in all .csv files in `/some/path/to/directory_1` receiving a value of 1, except for `/some/path/to/directory_1/template_1.csv` that will receive 2.
+
+
+## How to run
+
+### Map generation
+
+A map is generated procedurally given the templates (csv files) you have provided.
+
+1. Change paths to templates as described in [the instruction](https://github.com/AGI-Collective/mini_ada/edit/map_update/README.md#how-to-provide-paths-to-templates).  Take note of [1](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_4/README_templates_4.md), [2](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_mazes/README_mazes.md), [3](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_5/README_templates_5.md), [4](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_3/README_templates_3.md)
+2. Run `python Minigrid/minigrid/templates/template_generator.py`
+
+### Manually controled run
+
+1. Change paths to templates as described in [the instruction](https://github.com/AGI-Collective/mini_ada/edit/map_update/README.md#how-to-provide-paths-to-templates). Take note of [1](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_4/README_templates_4.md), [2](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_mazes/README_mazes.md), [3](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_5/README_templates_5.md), [4](https://github.com/AGI-Collective/mini_ada/blob/map_update/Minigrid/minigrid/templates/templates_3/README_templates_3.md)
+2. Run `python Minigrid/minigrid/manual_control.py`

@@ -5,6 +5,7 @@ from __future__ import annotations
 import gymnasium as gym
 import pygame
 from gymnasium import Env
+import pathlib
 
 from minigrid.core.actions import Actions
 from minigrid.minigrid_env import MiniGridEnv
@@ -117,9 +118,18 @@ if __name__ == "__main__":
         default="640",
         help="set the resolution for pygame rendering (width and height)",
     )
+    # todo daria add argument , default config.yaml file path
+    # todo make the path relative
+    parser.add_argument(
+        "--config-path",
+        type=str,
+        default=f"{pathlib.Path(__file__).parent.resolve()}./templates/config.yaml", # todo daria move config to a permanent place, change the path
+        help="set the path to the config.yaml that contains parameters for layouts and master map"
+    )
 
     args = parser.parse_args()
 
+    # todo daria supply it with a config file path here
     env: MiniGridEnv = gym.make(
         args.env_id,
         tile_size=args.tile_size,
@@ -127,6 +137,7 @@ if __name__ == "__main__":
         agent_pov=args.agent_view,
         agent_view_size=args.agent_view_size,
         screen_size=args.screen_size,
+        config_path=args.config_path,
     )
 
     # TODO: check if this can be removed
