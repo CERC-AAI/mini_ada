@@ -25,13 +25,12 @@ def append_log(log_path: str, text) -> None:
 """
 takes a path to a config file, and returns a single master map
 """
-def generate_mastermap(config_file_path: str) -> MasterMap:
+def generate_mastermap(args: dict) -> MasterMap:
     # TODO: Make into CLI tool
 
     # todo to find the bug, set random seeds and then pdb it
 
 
-    args = MinyDict.from_yaml(config_file_path)
 
     if args.root_folder == "__minigrid_folder__":
         args.root_folder = f"{Path(__file__).parent.parent.resolve()}"
@@ -40,7 +39,7 @@ def generate_mastermap(config_file_path: str) -> MasterMap:
     
     maps = {} # maps is a dict with path: value, and it updates value on each entry of a map
 
-    for i in args.layout_connor:
+    for i in args.layouts:
         # TODO turn each string path into Path
         # TODO make sure that directory paths ending with / and without are processed the same
         print(i)
@@ -50,8 +49,7 @@ def generate_mastermap(config_file_path: str) -> MasterMap:
         print('starts with layout', i.path.startswith('layout'))
 
         full_path = f"{args.root_folder}/{i.path}"
-        
-        assert os.path.exists(full_path)
+        assert os.path.exists(full_path), "Path doesn't exit, please change the path"
         file_list = []
         if os.path.isdir(full_path): # if path is a directory, we add each .csv file that starts with "layout" in its name
             if not full_path.endswith('/'):
