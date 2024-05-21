@@ -231,7 +231,7 @@ class CustomV1Env(MiniGridEnv):
         #    mmap = generate_mastermap()
        #     #mmap.to_csv(f"{LAYOUT_PATH}/master_layout_{i}.csv")
         #breakpoint()
-        mmap = generate_mastermap(self.config_path)
+        mmap = generate_mastermap(self.args)
         self.map_arr = np.array(mmap.sync_map_using_obj_map())
         self.default_map_arr = self.map_arr
         #breakpoint()

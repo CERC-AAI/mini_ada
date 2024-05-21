@@ -1,0 +1,28 @@
+root_folder: __miniada_folder__
+
+map:
+  height: 40
+  width: 40
+  logic: coverage_ratio # layout_count/coverage_ratio todo , add t
+  layout_count: 10 # number of rooms to add
+  coverage_ratio: 0.8 # max is 1 -- the whole room
+  timeout: 20
+  n_maps: 10
+  output_folder: data/master_maps
+
+
+# todo later, add a section for training
+
+layouts:
+  - path: data/templates/templates_1
+    value: 0.0
+  - path: data/templates/templates_2
+    value: 0.0
+  - path: data/templates/templates_1/layout_3.csv
+    value: 0.0
+  - path: data/templates/templates_4
+    value: 0
+  - path: data/templates/templates_mazes
+    value: 1
+  - path: data/templates/templates_5
+    value: 0
