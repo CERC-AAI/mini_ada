@@ -7,7 +7,9 @@ import re
 from minigrid.layout.tiles import *
 
 from minigrid.layout.constants import GENERATION_STATE
-from mini_ada.scripts import utiles
+import sys
+print(sys.path)
+from minigrid.scripts import utils
 
 
 class Map:
@@ -333,7 +335,7 @@ class MasterMap(Map):
         self.sync_map_using_obj_map()
         nparr = np.array(self.map)
 
-        nparr = utiles.convert_tiles(nparr)
+        nparr = utils.convert_tiles(nparr)
 
         return nparr
 

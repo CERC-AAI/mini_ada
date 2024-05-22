@@ -16,7 +16,7 @@ import numpy as np
 
 
 # import matplotlib.pyplot as plt
-from mini_ada.scripts.save_np_as_png import save_map_image
+from minigrid.scripts.save_np_as_png import save_map_image
 
 LAYOUT_PATH = Path(__file__).resolve().parent.parent / "templates/"
 
