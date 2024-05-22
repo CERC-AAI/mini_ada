@@ -1,0 +1,10 @@
+Exit,Space,Space,Space,Wall,Wall,Exit,Wall,Wall,Wall
+Wall,Exit,Space,Wall,Space,Space,Space,Exit,Wall,Wall
+Exit,Space,Space,Space,Space,Wall,Exit,Wall,Wall,Wall
+Wall,Exit,Wall,Exit,Space,Space,Space,Wall,Wall,Wall
+Space,Space,Space,Space,Space,Space,Space,Space,Wall,Wall
+Space,Space,Space,Space,Wall,Space,Space,Space,Space,Exit
+Exit,Space,Space,Space,Exit,Wall,Space,Space,Exit,Space
+Wall,Exit,Wall,Space,Space,Exit,Space,Exit,Space,Exit
+Exit,Space,Exit,Wall,Space,Wall,Space,Space,Space,Space
+Wall,Space,Wall,Exit,Wall,Wall,Space,Exit,Space,Wall

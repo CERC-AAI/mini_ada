@@ -1,0 +1,3 @@
+Undf(Wall),Exit,Undf(Wall)
+Exit,Undf(Space),Exit
+Undf(Wall),Exit,Undf(Wall)

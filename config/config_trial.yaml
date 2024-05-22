@@ -1,0 +1,30 @@
+# training config file
+
+
+# randomly chooses path among those the user provided in the following structure (trial)
+# if yaml (currently config.yaml exists for that) is chosen, then load one map on the fly, if a csv then load all maps in the path
+# todo, add a warning about what time of strategy is being chosen based on the structure proved in ...
+# warning: the structure contains both yaml and csv files, are you sure you want to proceed? the result might be either yaml or csv
+structure:
+  - path: /home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/
+    value: 0.0
+  - path: /home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/config.yaml
+    value: 1.0
+  - path: /home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/config.yaml
+    value: 0.22222
+  - path: /home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/templates_4/layouts_minigrid - layout_23_corr.csv
+    value: 10000
+
+
+# todo later, add a section for training
+
+#layout_connor:
+#  - path: path_str
+#    value: 0
+#  - path: path_str1
+#    value: 0
+
+
+#predifined_
+
+

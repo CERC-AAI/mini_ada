@@ -1,0 +1,12 @@
+,,,,Undf(Wall),Undf(Wall),Exit(Corridor),Undf(Wall),Exit(Room),Undf(Wall),Undf(Wall),Undf(Wall)
+Undf(Wall),Exit(Room),Undf(Wall),Undf(Wall),Undf(Wall),Space,Space,Space,Space,Space,Space,Undf(Wall)
+Exit(Room),Space,Space,Space,Space,Space,Space,Undf(Wall),Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Space,Undf(Wall),Space,Space,Undf(Wall),Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Space,Undf(Wall),Undf(Wall),Exit(Corridor),Undf(Wall),Space,Undf(Wall),Undf(Wall),Undf(Wall)
+Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),,,Undf(Wall),Space,Undf(Wall),,
+,,,Undf(Wall),Undf(Wall),Exit(Corridor),Undf(Wall),Undf(Wall),Space,Exit(Corridor),,
+,,,Undf(Wall),Space,Space,Space,Undf(Wall),Space,Undf(Wall),Undf(Wall),Undf(Wall)
+,,,Exit(Corridor),Space,Space,Space,Space,Space,Space,Space,Exit(Room)
+,,,Undf(Wall),Undf(Wall),Undf(Wall),Exit(Corridor),Undf(Wall),Space,Space,Space,Undf(Wall)
+,,,,,,,Undf(Wall),Space,Space,Space,Undf(Wall)
+,,,,,,,Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall)

@@ -1,0 +1,36 @@
+# training config file
+
+map:
+  height: 40
+  width: 40
+  logic: coverage_ratio # n_rooms/fill_map todo , add t
+  layout_count: 10 # number of rooms to add
+  coverage_ratio: 0.8 # max is 1 -- the whole room
+  timeout: 20
+#  amount:
+  output_folder: /home/mila/d/daria.yasafova/mini_ada/data/master_maps
+
+# randomly chooses path among those the user provided in the following structure (trial)
+# if yaml (currently config.yaml exists for that) is chosen, then load one map on the fly, if a csv then load all maps in the path
+# todo, add a warning about what time of strategy is being chosen based on the structure proved in ...
+# warning: the structure contains both yaml and csv files, are you sure you want to proceed? the result might be either yaml or csv
+structure:
+  - path: /home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/
+    value: 0.0
+  - path: /home/mila/d/daria.yasafova/mini_ada/Minigrid/minigrid/templates/config.yaml
+    value: 1.0
+
+
+
+# todo later, add a section for training
+
+#layout_connor:
+#  - path: path_str
+#    value: 0
+#  - path: path_str1
+#    value: 0
+
+
+#predifined_
+
+

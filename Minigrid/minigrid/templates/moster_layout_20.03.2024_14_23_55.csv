@@ -1,0 +1,10 @@
+Undf(Wall),Undf(Space),Exit,,,Undf(Space),Exit,Undf(Space),Space,Undf(Space)
+Undf(Space),Undf(Space),Undf(Space),Space,Undf(Space),Space,Undf(Space),Undf(Space),Undf(Space),Space
+Space,Undf(Space),Exit,Undf(Space),Undf(Space),Undf(Space),Exit,Undf(Space),Undf(Wall),Undf(Space)
+Undf(Wall),Undf(Space),Undf(Space),Space,Undf(Space),Space,,Space,Undf(Space),Exit
+Exit,Undf(Space),Space,Undf(Space),Exit,Undf(Space),,Undf(Space),Undf(Space),Undf(Space)
+,Space,Undf(Space),Undf(Space),Undf(Space),Space,,Space,Undf(Space),Undf(Wall)
+,Undf(Space),Space,Undf(Space),Exit,Undf(Space),,Undf(Space),Undf(Space),Undf(Space)
+,,,Undf(Wall),Undf(Space),Space,Undf(Space),Space,Undf(Space),Undf(Wall)
+,,,,,Undf(Space),Undf(Space),Undf(Space),,
+,,,,,Exit,Undf(Space),Exit,,

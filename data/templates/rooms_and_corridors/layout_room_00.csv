@@ -1,0 +1,4 @@
+Undf(Wall),Exit(Corridor),Undf(Wall),Undf(Wall),Undf(Wall)
+Exit(Corridor),Space,Space,Space,Exit(Corridor)
+Undf(Wall),Space,Space,Space,Undf(Wall)
+Undf(Wall),Undf(Wall),Exit(Corridor),Undf(Wall),Undf(Wall)

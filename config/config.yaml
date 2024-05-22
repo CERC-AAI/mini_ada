@@ -1,15 +1,22 @@
 root_folder: __miniada_folder__
 
 map:
-  height: 40
-  width: 40
+  height: 12 # and width
+  #width: 10
   logic: coverage_ratio # layout_count/coverage_ratio todo , add t
   layout_count: 10 # number of rooms to add
-  coverage_ratio: 0.8 # max is 1 -- the whole room
-  timeout: 20
-  n_maps: 10
-  output_folder: data/master_maps
+  coverage_ratio: 0.9 # max is 1 -- the whole room
+  timeout: 10 # 20
+  n_maps: 100
+  output_folder: $SCRATCH/miniada/maps/rooms_and_corridors_NEW_15052024_0 # $SCRATCH/miniada/data/master_maps/open_spaces/ # data/master_map_open_spaces_10x10 #data/master_maps
+  rewrite: False # True / False / user_defined
+  start_index: 26000
+  end_index: 39000
+  timeout_duplicates: 10
 
+thread:
+  batch_size: 100 # number of maps to generate per thread
+  thread_count: 2 # number of threads
 
 # todo later, add a section for training
 
@@ -23,6 +30,14 @@ layouts:
   - path: data/templates/templates_4
     value: 0
   - path: data/templates/templates_mazes
-    value: 1
+    value: 0 # 1
   - path: data/templates/templates_5
     value: 0
+  - path: data/templates/open_spaces # layouts i used to generate millions of open spaces
+    value: 0
+  - path: data/templates/rooms_dontuse
+    value: 0 #0.5
+  - path: data/templates/corridors
+    value: 0 #0.5
+  - path: data/templates/rooms_and_corridors
+    value: 1
