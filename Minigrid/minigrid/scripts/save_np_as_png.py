@@ -35,6 +35,7 @@ def create_map_image(
         # nparr[nparr == "Exit(Room)"] = 3
         # nparr[nparr == "Exit(Corridor)"] = 4
     }
+    breakpoint()
     map = convert_tiles(map, map_generation_status)
     image = np.zeros((map.shape[0], map.shape[1], 3))
 
@@ -53,5 +54,6 @@ def create_map_image(
 
 def save_map_image(map: np.ndarray, map_generation_status: str, full_path: str) -> None:
     image = create_map_image(map, map_generation_status)
+    breakpoint()
     plt.imsave(full_path, image)
     print(f"Processed and saved at: {full_path}")

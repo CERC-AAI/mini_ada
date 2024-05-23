@@ -62,11 +62,8 @@ def remove_duplicates(rectangles, output_dir):
     i = 0
     for rect in rectangles:
         rotations = rotate_rectangle(rect, i, output_dir, visualize=False)
-        #for rot in rotations:
         min_rotation = min(map(lambda x: tuple(map(tuple, x)), rotations))
-        #min_rotation = min(map(lambda x: x.tobytes(), rotations))
-        #breakpoint() todo check later
-        #breakpoint()
+        #breakpoint() # todo check later
         if min_rotation not in seen:
             seen.add(min_rotation)
             unique_rectangles.append(rect)
@@ -94,6 +91,7 @@ def process_csv(input_file, output_dir):
         rectangle_df.to_csv(
             f"{output_dir}/rectangle_{i}.csv", index=False, header=False
         )
+        breakpoint()
         # Save the layout as an image as well
         save_map_image( # todo daria check why images are empty
             rectangle,
@@ -114,6 +112,7 @@ output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/big_test"
 #input_file = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/layouts_minigrid - small_test_HERE_layout_rooms_10052024.csv"
 #output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/small_test"
 
+# TODO daria fix this mess
 
 #breakpoint()
 #data = pd.read_csv(input_file, header=None).to_numpy()

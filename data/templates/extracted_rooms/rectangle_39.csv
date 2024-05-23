@@ -1,0 +1,6 @@
+Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall)
+Exit(Room),Space,Space,Space,Space,Exit(Room)
+Undf(Wall),Space,Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Space,Space,Undf(Wall)
+Undf(Wall),Space,Space,Space,Space,Undf(Wall)
+Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall),Undf(Wall)

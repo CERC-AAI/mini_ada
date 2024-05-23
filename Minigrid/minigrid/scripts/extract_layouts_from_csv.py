@@ -77,6 +77,7 @@ def save_rectangles(data, output_dir):
             f"{output_dir}/rectangle_{rectangle_count}.csv", index=False, header=False
         )
         # Save the layout as an image as well
+        breakpoint()
         save_map_image(
             rectangle,
             map_generation_status="in_progress",
@@ -135,3 +136,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args.input_file, args.output_dir)
+
+# python extract_layouts_from_csv.py --input_file="/home/mila/d/daria.yasafova/mini_ada/data/source_csv/layouts_minigrid - WIP_layout_rooms_10052024.csv" --output_dir="/home/mila/d/daria.yasafova/mini_ada/data/templates/extracted_rooms"
+# python extract_layouts_from_csv.py --input_file="/home/mila/d/daria.yasafova/mini_ada/data/source_csv/layouts_minigrid - HERE_layout_rooms_10052024.csv" --output_dir="/home/mila/d/daria.yasafova/mini_ada/data/templates/extracted_rooms"
+#python extract_layouts_from_csv.py --input_file="/home/mila/d/daria.yasafova/mini_ada/data/source_csv/layouts_minigrid - HERE_layout_rooms_10052024.csv" --output_dir="/home/mila/d/daria.yasafova/scratch/miniada/images"
+
+
