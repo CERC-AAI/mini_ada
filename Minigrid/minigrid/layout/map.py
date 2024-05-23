@@ -1,14 +1,10 @@
 import numpy as np
 import pandas as pd
 import random
-import importlib
-import re
 
 from minigrid.layout.tiles import *
 
 from minigrid.layout.constants import GENERATION_STATE
-import sys
-print(sys.path)
 from minigrid.scripts import utils
 
 
@@ -314,28 +310,12 @@ class MasterMap(Map):
             filepath, index=False, header=False
         )
 
-    # 15/05/24 i added flag "map_generation_status" so that in case we want to save image of unfinished map we replace empty tiles i.e. ",,,,," in csv
+    # 15/05/24 i added flag "map_generation_status" so that in case we want to save image of an unfinished map
+    # we replace empty tiles i.e. ",,,,," in csv with -1 to be able to get an image
     def to_npy(self, map_generation_status="finished") -> np.array:
-        # self.sync_map_using_obj_map()
-        # nparr = np.array(self.map)
-        # nparr[nparr == "Space"] = 0  # constants, mappings, todo daria
-        # nparr[nparr == "Wall"] = 1
-        # nparr[nparr == "Undf(Wall)"] = 2
-        # nparr[nparr == "Exit(Room)"] = 3
-        # nparr[nparr == "Exit(Corridor)"] = 4
-        # if (
-        #    map_generation_status == "in_progress"
-        # ):  # todo daria, maybe remove in the future
-        #    nparr[nparr == None] = -1
-        # nparr = nparr.astype(int)
-        # return nparr
-
-        # todo daria check that the function after modification works as before 21/05/2024
-        breakpoint()
-        self.sync_map_using_obj_map()
+        self.sync_map_using_obj_map() # todo daria, possibly remove? doesn't do anything?
         nparr = np.array(self.map)
-
-        nparr = utils.convert_tiles(nparr)
+        nparr = utils.convert_tiles(nparr, map_generation_status)
 
         return nparr
 

@@ -1,22 +1,14 @@
 from minigrid.layout.map import MasterMap, SubMap
 from minigrid.layout.constants import GENERATION_STATE
 from pathlib import Path
-import yaml
 import json
 from minigrid.templates.util import now
-
-# from util import now
-from minydra import MinyDict
 import os
 import glob
-from pathlib import Path
 from numpy.random import choice
-import pandas as pd
 import numpy as np
-
-
-# import matplotlib.pyplot as plt
 from minigrid.scripts.save_np_as_png import save_map_image
+
 
 LAYOUT_PATH = Path(__file__).resolve().parent.parent / "templates/"
 
@@ -42,60 +34,7 @@ takes a path to a config file, and returns a single master map
 """
 
 
-"""
-def load_csv_to_image(csv_file_path, color_map):
-    
-    Load a CSV file and convert it to an image where each cell is a different pixel color.
-    
-    Args:
-    - csv_file_path: Path to the CSV file.
-    - color_map: A dictionary mapping cell contents (string) to a color (float3).
-    
-    Returns:
-    - An image where each CSV cell is represented as a pixel with the corresponding color.
-    
-    # Load the CSV file
-"""
 
-
-def create_map_image(
-    mmap, map_generation_status, magnification=20
-):  # image is actually a 2d numpy array
-    color_map = {  # todo add this to constants
-        1: (0, 0, 0),  # Black
-        0: (1, 1, 1),  # White
-        -1: (1.0, 0.5, 0.25),  # orange
-        2: (0.5, 0.5, 0.5),  # grey
-        4: (0.5, 0, 1),  # violet
-        3: (1, 0.5, 0.65),  # pink
-        # Add more mappings as needed
-        # nparr[nparr == "Space"] = 0  # constants, mappings, todo daria
-        # nparr[nparr == "Wall"] = 1
-        # nparr[nparr == "Undf(Wall)"] = 2
-        # nparr[nparr == "Exit(Room)"] = 3
-        # nparr[nparr == "Exit(Corridor)"] = 4
-    }
-
-    mmap_npy = mmap.to_npy(map_generation_status="in_progress")
-    # print(mmap_npy)
-    image = np.zeros((mmap_npy.shape[0], mmap_npy.shape[1], 3))
-
-    for i in range(mmap_npy.shape[0]):
-        for j in range(mmap_npy.shape[1]):
-            image[i, j] = color_map.get(mmap_npy[i, j], (0, 0, 0))
-
-    # If magnification is more than 1, upscale the image
-    if magnification > 1:
-        image = np.repeat(image, magnification, axis=0)
-        image = np.repeat(image, magnification, axis=1)
-
-    return image
-
-
-# def save_map_image(mmap, map_generation_status, full_path):
-#    image = create_map_image(mmap, map_generation_status)
-#    plt.imsave(full_path, image)
-#    print(f"Processed and saved at: {full_path}")
 
 
 def generate_mastermap(args: dict) -> MasterMap:
@@ -265,10 +204,9 @@ def generate_mastermap(args: dict) -> MasterMap:
                 f"{LAYOUT_PATH}/master_layout_{timestamp}.csv"
             )  # store the intermediate master map
             """
-
+            map_npy = mmap.to_npy(map_generation_status="in_progress") 
             save_map_image(
-                mmap,
-                map_generation_status="in_progress",
+                map_npy,
                 full_path=f"{LAYOUT_PATH}/master_layout_{timestamp}.png",
             )
             mmap.to_csv(
@@ -287,7 +225,7 @@ def generate_mastermap(args: dict) -> MasterMap:
     mmap.update_map_tiles(state=GENERATION_STATE.END)
     save_map_image(
         mmap,
-        map_generation_status="default",
+        map_generation_status="finished",
         full_path=f"{LAYOUT_PATH}/master_layout_{timestamp}_END.png",
     )
     breakpoint()

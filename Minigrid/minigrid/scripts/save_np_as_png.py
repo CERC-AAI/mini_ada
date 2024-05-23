@@ -19,7 +19,7 @@ def load_csv_to_image(csv_file_path, color_map):
 
 
 def create_map_image(
-    map: np.ndarray, map_generation_status: str, magnification=20
+    map: np.ndarray, magnification=20
 ) -> np.ndarray:  # image is actually a 2d numpy array
     color_map = {  # todo add this to constants
         1: (0, 0, 0),  # Black
