@@ -71,7 +71,6 @@ def save_rectangles(data, output_dir):
             break
 
         rectangle = extract_rectangle(data, top_left, bottom_right)
-
         # Save the rectangle to a CSV file
         rectangle_df = pd.DataFrame(rectangle)
         rectangle_df.to_csv(
@@ -85,6 +84,23 @@ def save_rectangles(data, output_dir):
         )
         rectangle_count += 1
 
+def get_rectangles(data: np.ndarray) -> list[np.ndarray]:
+    rectangles = []
+    #for i in data:
+    #    print(i)
+    while True:
+        top_left, bottom_right = find_next_rectangle(data)
+        if top_left is None:
+            break
+
+        rectangle = extract_rectangle(data, top_left, bottom_right) # todo check if it modifies data (removes it)
+        #rectangles = np.append(rectangles, rectangle) # this is wrong, it appends it into one large numpy array, instead of a list of numpy arrays
+        rectangles.append(rectangle)
+
+    #breakpoint()
+
+    return rectangles
+        
 
 def main(input_file, output_dir):
     # Read the CSV file into a NumPy array
@@ -92,13 +108,16 @@ def main(input_file, output_dir):
     print(data)
     for i in data:
         print(i)
-    breakpoint()
-
-    save_rectangles(data, output_dir)
+    #breakpoint()
+    #get_rectangles(data) # todo remove this later, just testing why it's not working
     print(data)
     for i in data:
         print(i)
-    breakpoint()
+    save_rectangles(data, output_dir)
+    #print(data)
+    #for i in data:
+    #    print(i)
+    #breakpoint()
     # Save the modified original array back to a CSV file
     modified_df = pd.DataFrame(data)
     modified_df.to_csv(

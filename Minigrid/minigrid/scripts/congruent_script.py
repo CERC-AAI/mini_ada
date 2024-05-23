@@ -1,5 +1,8 @@
 import numpy as np
 import pandas as pd
+from extract_layouts_from_csv import get_rectangles
+from save_np_as_png import save_map_image
+import os
 
 def load_csv(file_path):
     """
@@ -17,32 +20,55 @@ def load_csv(file_path):
             current_rectangle.append(row.tolist())
     if current_rectangle:
         rectangles.append(np.array(current_rectangle))
+
+    breakpoint()
     return rectangles
 
-def rotate_rectangle(rect):
+def rotate_rectangle(rect, i, output_dir, visualize):
     """
     Generate all four rotations of a rectangle.
     """
     rotations = [rect]
+    output_dir = output_dir + f"/rect_{i}/"
+    #output_dir = output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/rect/"
+    
+    os.makedirs(output_dir, exist_ok=True)
+
+    # save image of the orinal extracted rectangle
+    if visualize is True:
+        save_map_image(rect,
+                map_generation_status="in_progress",
+                full_path=f"{output_dir}/rect.png",
+            )
     for _ in range(3):
         rect = np.rot90(rect)
+        # save image of its rotations
+        if visualize is True:
+            save_map_image(rect,
+                map_generation_status="in_progress",           
+                full_path=f"{output_dir}/rect_rotation_{_}.png",
+            )
         rotations.append(rect)
+
     return rotations
 
-def remove_duplicates(rectangles):
+def remove_duplicates(rectangles, output_dir):
     """
     Remove duplicate rectangles including congruent ones under rotation.
     """
     unique_rectangles = []
     seen = set()
     
+    i = 0
     for rect in rectangles:
-        rotations = rotate_rectangle(rect)
+        rotations = rotate_rectangle(rect, i, output_dir, visualize=False)
         min_rotation = min(map(lambda x: x.tobytes(), rotations))
         if min_rotation not in seen:
             seen.add(min_rotation)
             unique_rectangles.append(rect)
+        i = i + 1
             
+    #breakpoint()
     return unique_rectangles
 
 def save_to_numpy_array(rectangles):
@@ -51,15 +77,41 @@ def save_to_numpy_array(rectangles):
     """
     return np.array(rectangles)
 
-def process_csv(file_path):
-    """
-    Process the CSV file to remove duplicates and save the unique rectangles to a NumPy array.
-    """
-    rectangles = load_csv(file_path)
-    unique_rectangles = remove_duplicates(rectangles)
-    return save_to_numpy_array(unique_rectangles)
+# todo use it later
+def process_csv(input_file, output_dir):
+    data = pd.read_csv(input_file, header=None).to_numpy()
+    rectangles = get_rectangles(data)
+    unique_rectangles = remove_duplicates(rectangles, output_dir)
+    breakpoint()
+    for i in range(unique_rectangles):
+        rectangle = unique_rectangles[i]
+
+        # Save the rectangle to a CSV file
+        rectangle_df = pd.DataFrame(rectangle)
+        rectangle_df.to_csv(
+            f"{output_dir}/rectangle_{i}.csv", index=False, header=False
+        )
+        # Save the layout as an image as well
+        save_map_image(
+            rectangle,
+            map_generation_status="in_progress",
+            full_path=f"{output_dir}/rectangle_{i}.png",
+        )
+
+
+
+    #rectangles = load_csv(file_path) this doesn't work
+    #unique_rectangles = remove_duplicates(rectangles)
+    #return save_to_numpy_array(unique_rectangles)
 
 # Example usage:
-file_path = 'rectangles.csv'  # replace with your CSV file path
-unique_rectangles_array = process_csv(file_path)
-print(unique_rectangles_array)
+input_file = '/home/mila/d/daria.yasafova/mini_ada/data/source_csv/layouts_minigrid - HERE_layout_rooms_10052024.csv'  # replace with your CSV file path
+output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/output_congruent"
+#breakpoint()
+data = pd.read_csv(input_file, header=None).to_numpy()
+rectangles = get_rectangles(data)
+unique_rectangles = remove_duplicates(rectangles, output_dir)
+breakpoint()
+process_csv(input_file, output_dir)
+
+# todo save the unique layouts as csv files
