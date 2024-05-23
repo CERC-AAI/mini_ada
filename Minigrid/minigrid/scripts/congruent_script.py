@@ -32,9 +32,9 @@ def rotate_rectangle(rect, i, output_dir, visualize):
     output_dir = output_dir + f"/rect_{i}/"
     #output_dir = output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/rect/"
     
-    os.makedirs(output_dir, exist_ok=True)
 
     # save image of the orinal extracted rectangle
+    os.makedirs(output_dir, exist_ok=True)
     if visualize is True:
         save_map_image(rect,
                 map_generation_status="in_progress",
@@ -62,7 +62,11 @@ def remove_duplicates(rectangles, output_dir):
     i = 0
     for rect in rectangles:
         rotations = rotate_rectangle(rect, i, output_dir, visualize=False)
-        min_rotation = min(map(lambda x: x.tobytes(), rotations))
+        #for rot in rotations:
+        min_rotation = min(map(lambda x: tuple(map(tuple, x)), rotations))
+        #min_rotation = min(map(lambda x: x.tobytes(), rotations))
+        #breakpoint() todo check later
+        #breakpoint()
         if min_rotation not in seen:
             seen.add(min_rotation)
             unique_rectangles.append(rect)
@@ -82,21 +86,21 @@ def process_csv(input_file, output_dir):
     data = pd.read_csv(input_file, header=None).to_numpy()
     rectangles = get_rectangles(data)
     unique_rectangles = remove_duplicates(rectangles, output_dir)
-    breakpoint()
-    for i in range(unique_rectangles):
-        rectangle = unique_rectangles[i]
-
+    #breakpoint() # todo check that i is int and not a numpy array
+    i = 0
+    for rectangle in unique_rectangles:
         # Save the rectangle to a CSV file
         rectangle_df = pd.DataFrame(rectangle)
         rectangle_df.to_csv(
             f"{output_dir}/rectangle_{i}.csv", index=False, header=False
         )
         # Save the layout as an image as well
-        save_map_image(
+        save_map_image( # todo daria check why images are empty
             rectangle,
             map_generation_status="in_progress",
             full_path=f"{output_dir}/rectangle_{i}.png",
         )
+        i = i + 1
 
 
 
@@ -106,12 +110,16 @@ def process_csv(input_file, output_dir):
 
 # Example usage:
 input_file = '/home/mila/d/daria.yasafova/mini_ada/data/source_csv/layouts_minigrid - HERE_layout_rooms_10052024.csv'  # replace with your CSV file path
-output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/output_congruent"
+output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/big_test"
+#input_file = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/layouts_minigrid - small_test_HERE_layout_rooms_10052024.csv"
+#output_dir = "/home/mila/d/daria.yasafova/mini_ada/data/source_csv/small_test"
+
+
 #breakpoint()
-data = pd.read_csv(input_file, header=None).to_numpy()
-rectangles = get_rectangles(data)
-unique_rectangles = remove_duplicates(rectangles, output_dir)
-breakpoint()
+#data = pd.read_csv(input_file, header=None).to_numpy()
+#rectangles = get_rectangles(data)
+#unique_rectangles = remove_duplicates(rectangles, output_dir)
+#breakpoint()
 process_csv(input_file, output_dir)
 
 # todo save the unique layouts as csv files
